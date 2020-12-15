@@ -13,9 +13,9 @@ def zakazane_miasta(liczba_miast):
     for i in range(liczba_miast):
         mozliwosci.append(i)
     for i in range(dziesiatki):
-        x = random.randrange(0, len(mozliwosci))
+        x = random.randrange(1, len(mozliwosci))
         while x-1 in zakazane:
-            x = random.randrange(0, len(mozliwosci))
+            x = random.randrange(1, len(mozliwosci))
         zakazane.append(mozliwosci[x])
         mozliwosci.pop(x)
     return zakazane
@@ -142,11 +142,11 @@ def zachlannyTSP(liczba_miast,odl,zakaz):
         if a not in zakaz:
             sciezka.append(a)
             aktualne_miasto = sciezka[0]
-            for i in range(1,liczba_miast):
+            for i in range(1, liczba_miast):
                 min = 10000000
                 nast = 0
                 for j in range(len(odl[aktualne_miasto])):
-                    if i%3 == 0 and j in zakaz:
+                    if i % 3 == 0 and j in zakaz:
                         pass
                     elif j not in sciezka and j != aktualne_miasto and odl[aktualne_miasto][j] < min:
                         min = odl[aktualne_miasto][j]
@@ -154,83 +154,86 @@ def zachlannyTSP(liczba_miast,odl,zakaz):
                 aktualne_miasto = nast
                 sciezka.append(nast)
             sciezka.append(sciezka[0])
-            x = dlugosc_sciezki(odl,sciezka)
+            x = dlugosc_sciezki(odl, sciezka)
             if x < najlepszy_dystans:
                 wszystki = sciezka
                 najlepszy_dystans = x
+    print(wszystki,"teee")
     return wszystki,najlepszy_dystans
 
-def tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane):
-        iteracje = 100000  # ilosc iteracji algorytmu TABU
-        najlepsza_droga = domyslna_droga.copy()
-        najlepsza_odleglosc = dlugosc_sciezki(odl_miast, domyslna_droga)
-        domyslna_droga.pop()
-        drogi_TABU = []  # przechowuje dnajlepsze sciezki
-        wartosci_TABU = []
-        for losowa in range(15):
-            nowy_kandydat = stworz_permutacje(domyslna_droga,zakazane,liczba_miast)
-            if najlepsza_odleglosc > dlugosc_sciezki(odl_miast, nowy_kandydat):
-                najlepsza_odleglosc =  dlugosc_sciezki(odl_miast, nowy_kandydat)
-                najlepsza_droga = nowy_kandydat
-        permutacja = najlepsza_droga
-        drogi_TABU.append(permutacja)
-        wartosci_TABU.append(dlugosc_sciezki(odl_miast, permutacja))
-        for i in range(iteracje):
-            wartosci = losowe_liczby(liczba_miast,permutacja,zakazane) # pętla ma na celu zmianę wartości zmiennej J gdyby zmienna J była równa zmiennej G
-            g = wartosci[0]
-            j = wartosci[1]
-            permutacja[g], permutacja[j] = permutacja[j], permutacja[g]
-            ost = int(len(permutacja)) - 1
-            permutacja[ost] = permutacja[0] # dodanie do końcca listy nową liste ze zmienionymi 2 elementami
-            aktualna_odl = dlugosc_sciezki(odl_miast, permutacja)
-            if (len(drogi_TABU) < 5):
-                drogi_TABU.append(permutacja)                    # dodanie do tablicy tabu kombinacji przejść między miastami
-                wartosci_TABU.append(aktualna_odl)                           # dodanie do tablicy Tabu otrzymanej długości ścieżki
-            elif (len(drogi_TABU) == 5 and aktualna_odl < max(wartosci_TABU)):     # żeby ułatwić analize ograniczamy tablicę tabu i tabuval do 5 elementów,
-                if permutacja in drogi_TABU:# if się wykona wtedy i tylko wtedy gdy tabu jest == 5 oraz wartość ścieżki jest mniejsza od maxa w obecnej tablicy wartości tabu,
-                    pass                                    # gdy nowowygenerowana tablica ze ściężką jest już w tablicy tabu przeskakujemy do nowej generacji
-                else:                                       # w przeciwnym wypadku sprawdzamy jaki indeks ma największa wartość w tablicy wartości, a następnie zamieniamy wartości
-                    poz = wartosci_TABU.index(max(wartosci_TABU))
-                    drogi_TABU[poz] = permutacja
-                    wartosci_TABU[poz] = aktualna_odl
-        optpoz = wartosci_TABU.index(min(wartosci_TABU))
-        najlepsza_odleglosc = wartosci_TABU[optpoz]
-        najlepsza_droga = drogi_TABU[optpoz]
-  #      wyniki.append((drogi_TABU[optpoz], wartosci_TABU[optpoz]))
- #   for i in range(len(wyniki)):
- #       if wyniki[i][1] < najlepsza_odleglosc:
- #           najlepsza_droga = wyniki[i][0]
- #           najlepsza_odleglosc = wyniki[i][1]
-        return najlepsza_droga,najlepsza_odleglosc
+def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
+    iteracje = 100000  # ilosc iteracji algorytmu TABU
+    najlepsza_droga = domyslna_droga.copy()
+    najlepsza_odleglosc = dlugosc_sciezki(odl_miast, domyslna_droga)
+    domyslna_droga.pop()
+    drogi_TABU = []  # przechowuje dnajlepsze sciezki
+    wartosci_TABU = []
+    kandydat = []
+    for losowa in range(15):
+        nowy_kandydat = stworz_permutacje(domyslna_droga, zakazane, liczba_miast)
+        if najlepsza_odleglosc > dlugosc_sciezki(odl_miast, nowy_kandydat):
+            kandydat = nowy_kandydat
+    permutacja = copy.deepcopy(kandydat)
+    # print(dlugosc_sciezki(odl_miast, kandydat))
+    drogi_TABU.append(permutacja)
+    wartosci_TABU.append(dlugosc_sciezki(odl_miast, permutacja))
+    for i in range(iteracje):
+        wartosci = losowe_liczby(liczba_miast, permutacja,zakazane)  # pętla ma na celu zmianę wartości zmiennej J gdyby zmienna J była równa zmiennej G
+        g = wartosci[0]
+        j = wartosci[1]
+        permutacja[g], permutacja[j] = permutacja[j], permutacja[g]
+        ost = int(len(permutacja)) - 1
+        permutacja[ost] = permutacja[0]  # dodanie do końcca listy nową liste ze zmienionymi 2 elementami
+        aktualna_odl = dlugosc_sciezki(odl_miast, permutacja)
+        dodaj = copy.deepcopy(permutacja)
+        if aktualna_odl < dlugosc_sciezki(odl_miast, kandydat):
+            kandydat = dodaj
+        if (len(drogi_TABU) < 5):
+            drogi_TABU.append(dodaj)  # dodanie do tablicy tabu kombinacji przejść między miastami
+            wartosci_TABU.append(aktualna_odl)  # dodanie do tablicy Tabu otrzymanej długości ścieżki
+        elif (len(drogi_TABU) == 5):  # żeby ułatwić analize ograniczamy tablicę tabu i tabuval do 5 elementów,
+            if dodaj in drogi_TABU:  # if się wykona wtedy i tylko wtedy gdy tabu jest == 5 oraz wartość ścieżki jest mniejsza od maxa w obecnej tablicy wartości tabu,
+                #drogi_TABU.pop(0)
+                #wartosci_TABU.pop(0)
+                pass  # gdy nowowygenerowana tablica ze ściężką jest już w tablicy tabu przeskakujemy do nowej generacji
+            else:  # w przeciwnym wypadku sprawdzamy jaki indeks ma największa wartość w tablicy wartości, a następnie zamieniamy wartości
+                drogi_TABU.pop(0)
+                wartosci_TABU.pop(0)
+                drogi_TABU.append(dodaj)
+                wartosci_TABU.append(aktualna_odl)
+    if dlugosc_sciezki(odl_miast, kandydat) < najlepsza_odleglosc:
+        najlepsza_droga = kandydat
+        najlepsza_odleglosc = dlugosc_sciezki(odl_miast, kandydat)
+    return najlepsza_droga, najlepsza_odleglosc
 
 def main():
     liczba_miast = int(input("Podaj liczbe miast: "))
-    for i in range(1):
-        zakazane = []
-        #zakazane = zakazane_miasta(liczba_miast)
+    for i in range(10):
+        #zakazane = []
+        zakazane = zakazane_miasta(liczba_miast)
 #        print(len(zakazane))
         wsp_miast1 = generate_city_coordinates(liczba_miast)
-#        print(zakazane)
+        print(zakazane)
         wsp_miast = copy.deepcopy(wsp_miast1)
         domyslna_droga = stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane)
         # domyslna_droga = sciezka_bez(liczba_miast)
         odl_miast = oblicz_odleglosci(wsp_miast)  # wszystkie odleglosc
         # for i in range(liczba_miast):
         #     print(wsp_miast[i])
-        print(dlugosc_sciezki(odl_miast,domyslna_droga))
+        #print("domyslna:",dlugosc_sciezki(odl_miast,domyslna_droga))
         start = time.time()
         zachlanny = zachlannyTSP(liczba_miast,odl_miast,zakazane)
         koniec = time.time()
     #    print(zachlanny[0],"\n",zachlanny[1])
-#        print(zachlanny[0])
-        print(zachlanny[1])
-        print("czas dla zachlannego: ",koniec - start)
-        start1 = time.time()
-        tabuTSP = tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane)
-        koniec1 = time.time()
-    #    print("Najoptymalniejsza sciezka metodą Tabu Search: ", tabuTSP[0])
-        print("Jej dlugosc wynosi:", tabuTSP[1])
-        print("czas dla Tabu: ",koniec1 - start1)
-        print("\n")
+        print("scieżka zachlanna: ",zachlanny[0])
+       # print("sciezka dla zachlannego:",zachlanny[1])
+       # print("czas dla zachlannego: ",koniec - start)
+       # start1 = time.time()
+       # tabuTSP = tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane)
+       # koniec1 = time.time()
+       # print("Najoptymalniejsza sciezka metodą Tabu Search: ", tabuTSP[0])
+       # print("Jej dlugosc wynosi:", tabuTSP[1])
+       # print("czas dla Tabu: ",koniec1 - start1)
+       # print("\n")
 
 main()
