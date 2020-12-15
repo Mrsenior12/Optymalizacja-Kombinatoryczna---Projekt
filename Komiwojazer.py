@@ -205,11 +205,12 @@ def tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane):
 
 def main():
     liczba_miast = int(input("Podaj liczbe miast: "))
-    for i in range(10):
-        zakazane = zakazane_miasta(liczba_miast)
-        print(len(zakazane))
+    for i in range(1):
+        zakazane = []
+        #zakazane = zakazane_miasta(liczba_miast)
+#        print(len(zakazane))
         wsp_miast1 = generate_city_coordinates(liczba_miast)
-        print(zakazane)
+#        print(zakazane)
         wsp_miast = copy.deepcopy(wsp_miast1)
         domyslna_droga = stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane)
         # domyslna_droga = sciezka_bez(liczba_miast)
@@ -221,7 +222,7 @@ def main():
         zachlanny = zachlannyTSP(liczba_miast,odl_miast,zakazane)
         koniec = time.time()
     #    print(zachlanny[0],"\n",zachlanny[1])
-        print(zachlanny[0])
+#        print(zachlanny[0])
         print(zachlanny[1])
         print("czas dla zachlannego: ",koniec - start)
         start1 = time.time()
