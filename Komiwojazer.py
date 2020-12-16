@@ -135,30 +135,27 @@ def dlugosc_sciezki(odl_miast,sciezka):
     return round(odl,2)
 
 def zachlannyTSP(liczba_miast,odl,zakaz):
-    wszystki = []
+    sciezka = []
+    x = random.randrange(0,liczba_miast-1)
+    while x  in zakaz:
+        x = random.randrange(0,liczba_miast-1)
+    sciezka.append(x)
     najlepszy_dystans = 100000000
-    for a in range(1):
-        sciezka = []
-        if a not in zakaz:
-            sciezka.append(a)
-            aktualne_miasto = sciezka[0]
-            for i in range(1, liczba_miast):
-                min = 10000000
-                nast = 0
-                for j in range(len(odl[aktualne_miasto])):
-                    if i % 3 == 0 and j in zakaz:
-                        pass
-                    elif j not in sciezka and j != aktualne_miasto and odl[aktualne_miasto][j] < min:
-                        min = odl[aktualne_miasto][j]
-                        nast = j
-                aktualne_miasto = nast
-                sciezka.append(nast)
-            sciezka.append(sciezka[0])
-            x = dlugosc_sciezki(odl, sciezka)
-            if x < najlepszy_dystans:
-                wszystki = sciezka
-                najlepszy_dystans = x
-    return wszystki,najlepszy_dystans
+    aktualne_miasto = sciezka[0]
+    for i in range(1, liczba_miast):
+        min = 10000000
+        nast = 0
+        for j in range(len(odl[aktualne_miasto])):
+            if i % 3 == 0 and j in zakaz:
+                pass
+            elif j not in sciezka and j != aktualne_miasto and odl[aktualne_miasto][j] < min:
+                min = odl[aktualne_miasto][j]
+                nast = j
+            aktualne_miasto = nast
+            sciezka.append(nast)
+    sciezka.append(sciezka[0])
+    najlepszy_dystans = dlugosc_sciezki(odl,sciezka)
+    return sciezka,najlepszy_dystans
 
 def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
     iteracje = 100000  # ilosc iteracji algorytmu TABU
@@ -217,8 +214,8 @@ def main():
         domyslna_droga = stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane)
         # domyslna_droga = sciezka_bez(liczba_miast)
         odl_miast = oblicz_odleglosci(wsp_miast)  # wszystkie odleglosc
-        # for i in range(liczba_miast):
-        #     print(wsp_miast[i])
+       # for i in range(liczba_miast):
+       #      print(odl_miast[i])
         print("domyslna:",dlugosc_sciezki(odl_miast,domyslna_droga))
         start = time.time()
         zachlanny = zachlannyTSP(liczba_miast,odl_miast,zakazane)
@@ -230,7 +227,7 @@ def main():
         start1 = time.time()
         tabuTSP = tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane)
         koniec1 = time.time()
-    #    print("Najoptymalniejsza sciezka metodą Tabu Search: ", tabuTSP[0])
+        print("Najoptymalniejsza sciezka metodą Tabu Search: ", tabuTSP[0])
         print("Jej dlugosc wynosi:", tabuTSP[1])
         print("czas dla Tabu: ",koniec1 - start1)
        # print("\n")
