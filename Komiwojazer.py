@@ -23,21 +23,21 @@ def zakazane_miasta(liczba_miast):
 def generate_city_coordinates(liczba_miast):
 # tworzenie miast na podstawie ich współrzędznych X i Y
    # a = []
-   # with open("wspTSP.txt") as f:
-   #     a = [int(x) for x in f.read().split()]
-   # f.close()
-   # wsp = []
-   # for i in range(0, (liczba_miast*3), 3):
-   #     wsp.append((a[i + 1], a[i + 2]))
-   # return wsp
+    with open("wspTSP.txt") as f:
+        a = [int(x) for x in f.read().split()]
+    f.close()
+    wsp = []
+    for i in range(0, (liczba_miast*3), 3):
+        wsp.append((a[i + 1], a[i + 2]))
+    return wsp
     #lista = []
     #for i in range(liczba_miast):
     #    a,x, y = input().split()
     #    x1 = int(x)
     #    y1 = int(y)
     #    lista.append((x1, y1))
-    axis_range = range(liczba_miast*1)
-    return tuple(zip(sample(axis_range, liczba_miast), sample(axis_range, liczba_miast)))
+    #axis_range = range(liczba_miast*1)
+    #return tuple(zip(sample(axis_range, liczba_miast), sample(axis_range, liczba_miast)))
     #return lista
 
 def stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane):
@@ -77,7 +77,6 @@ def odleglosci(x1, y1, x2, y2):  # odleglosci miedzy miastem A i miastem B
     return round(math.sqrt(old), 2)
 
 def stworz_permutacje(domyslna_droga,zakazane,liczba_miast):
-#tworzymy permutacje równą ilości miast
 #najpierw usuwamy z listy lementy zakazane
 #następnie losujemy liczby z podanego zaresu, dla 0 są to liczby z listy bez zakazanych
 #dla podzielnych przez 3 z listy zakazanych
@@ -201,10 +200,10 @@ def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
 def main():
     liczba_miast = int(input("Podaj liczbe miast: "))
     for i in range(1):
-        zakazane = []
-     #   zakazane = zakazane_miasta(liczba_miast)
+     #   zakazane = []
+        zakazane = zakazane_miasta(liczba_miast)
         wsp_miast1 = generate_city_coordinates(liczba_miast)
-    #    print(zakazane)
+        print(zakazane)
         wsp_miast = copy.deepcopy(wsp_miast1)
         domyslna_droga = stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane)
         odl_miast = oblicz_odleglosci(wsp_miast)  # wszystkie odleglosc
