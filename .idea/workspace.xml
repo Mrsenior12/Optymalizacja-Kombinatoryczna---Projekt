@@ -21,12 +21,13 @@
   <component name="ProjectId" id="1lTKImy3DJjYAXFASmyks1UX83I" />
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="PyConsoleConfigurable.Python Console" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings sdk-home="C:\Users\Olek\PycharmProjects\testowanie\venv\Scripts\python.exe">
+      <console-settings module-name="Optymalizacja-Kombinatoryczna---Projekt" sdk-home="C:\Users\Olek\PycharmProjects\testowanie\venv\Scripts\python.exe">
         <option name="mySdkHome" value="C:\Users\Olek\PycharmProjects\testowanie\venv\Scripts\python.exe" />
+        <option name="myModuleName" value="Optymalizacja-Kombinatoryczna---Projekt" />
       </console-settings>
     </option>
   </component>

@@ -23,21 +23,21 @@ def zakazane_miasta(liczba_miast):
 def generate_city_coordinates(liczba_miast):
 # tworzenie miast na podstawie ich współrzędznych X i Y
    # a = []
-    with open("wspTSP.txt") as f:
-        a = [int(x) for x in f.read().split()]
-    f.close()
-    wsp = []
-    for i in range(0, (liczba_miast*3), 3):
-        wsp.append((a[i + 1], a[i + 2]))
-    return wsp
+    #with open("wspTSP.txt") as f:
+    #    a = [int(x) for x in f.read().split()]
+    #f.close()
+    #wsp = []
+   # for i in range(0, (liczba_miast*3), 3):
+   #     wsp.append((a[i + 1], a[i + 2]))
+   # return wsp
     #lista = []
     #for i in range(liczba_miast):
     #    a,x, y = input().split()
     #    x1 = int(x)
     #    y1 = int(y)
     #    lista.append((x1, y1))
-    #axis_range = range(liczba_miast*1)
-    #return tuple(zip(sample(axis_range, liczba_miast), sample(axis_range, liczba_miast)))
+    axis_range = range(liczba_miast*1)
+    return tuple(zip(sample(axis_range, liczba_miast), sample(axis_range, liczba_miast)))
     #return lista
 
 def stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane):
@@ -66,7 +66,7 @@ def oblicz_odleglosci(wsp_miast):
     return macierz_odleglosci
 
 def zakazane_odleglosci(odleglosci,zakazane):
-    lista = copy.deepcopy(odleglosci)
+    lista = list(odleglosci)
     for godzina in range(len(zakazane)):
         for miasto in range(len(lista[godzina])):
             lista[miasto][zakazane[godzina]-1] = 9999
@@ -83,8 +83,8 @@ def stworz_permutacje(domyslna_droga,zakazane,liczba_miast):
 #dla reszyt z listy bez zakazanych
 #na koniec dodajemy pierwszy element aby komiwojażer wrócił do miasta z którego wyruszył
     permutacja = []
-    lista = copy.deepcopy(domyslna_droga)
-    zakazane = copy.deepcopy(zakazane)
+    lista = list(domyslna_droga)
+    zakazane = list(zakazane)
     for i in range(len(zakazane)):
         lista.remove(zakazane[i])
     for i in range(liczba_miast):
@@ -164,7 +164,7 @@ def zachlannyTSP(liczba_miast,odl,zakaz):
 
 def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
     iteracje = 100000  # ilosc iteracji algorytmu TABU
-    najlepsza_droga = domyslna_droga.copy()
+    najlepsza_droga = list(domyslna_droga)
     najlepsza_odleglosc = dlugosc_sciezki(odl_miast, domyslna_droga)
     domyslna_droga.pop()
     drogi_TABU = []  # przechowuje dnajlepsze sciezki
@@ -173,7 +173,7 @@ def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
         nowy_kandydat = stworz_permutacje(domyslna_droga, zakazane, liczba_miast)
         if dlugosc_sciezki(odl_miast, kandydat) > dlugosc_sciezki(odl_miast, nowy_kandydat):
             kandydat = nowy_kandydat
-    permutacja = copy.deepcopy(kandydat)
+    permutacja = list(kandydat)
     drogi_TABU.append(permutacja)
     for i in range(iteracje):
         wartosci = losowe_liczby(liczba_miast, permutacja,zakazane)
@@ -183,7 +183,7 @@ def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
         ost = int(len(permutacja)) - 1
         permutacja[ost] = permutacja[0]
         aktualna_odl = dlugosc_sciezki(odl_miast, permutacja)
-        dodaj = copy.deepcopy(permutacja)
+        dodaj = list(permutacja)
         if aktualna_odl < dlugosc_sciezki(odl_miast, kandydat):
             kandydat = dodaj
         if dodaj not in drogi_TABU:
@@ -200,25 +200,27 @@ def tabuserchTSP(liczba_miast, odl_miast, domyslna_droga, zakazane):
 def main():
     liczba_miast = int(input("Podaj liczbe miast: "))
     for i in range(1):
-     #   zakazane = []
-        zakazane = zakazane_miasta(liczba_miast)
+        zakazane = []
+       # zakazane = zakazane_miasta(liczba_miast)
         wsp_miast1 = generate_city_coordinates(liczba_miast)
-        print(zakazane)
-        wsp_miast = copy.deepcopy(wsp_miast1)
+    #    print(zakazane)
+        wsp_miast = list(wsp_miast1)
         domyslna_droga = stworz_sciezke_z_ograniczeniem(liczba_miast,zakazane)
         odl_miast = oblicz_odleglosci(wsp_miast)  # wszystkie odleglosc
-        print("domyslna:",dlugosc_sciezki(odl_miast,domyslna_droga))
-        start = time.time()
-        zachlanny = zachlannyTSP(liczba_miast,odl_miast,zakazane)
-        koniec = time.time()
-        print("scieżka zachlanna: ",zachlanny[0])
-        print("sciezka dla zachlannego:",zachlanny[1])
-        print("czas dla zachlannego: ",koniec - start)
-        start1 = time.time()
-        tabuTSP = tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane)
-        koniec1 = time.time()
-        print("Najoptymalniejsza sciezka metodą Tabu Search: ", tabuTSP[0])
-        print("Jej dlugosc wynosi:", tabuTSP[1])
-        print("czas dla Tabu: ",koniec1 - start1)
-        print("\n")
+        for i in range(liczba_miast):
+            print(odl_miast[i])
+    #    print("domyslna:",dlugosc_sciezki(odl_miast,domyslna_droga))
+    #    start = time.time()
+    #    zachlanny = zachlannyTSP(liczba_miast,odl_miast,zakazane)
+    #    koniec = time.time()
+    #    print("scieżka zachlanna: ",zachlanny[0])
+    #    print("sciezka dla zachlannego:",zachlanny[1])
+    #    print("czas dla zachlannego: ",koniec - start)
+    #    start1 = time.time()
+    #    tabuTSP = tabuserchTSP(liczba_miast,odl_miast,domyslna_droga,zakazane)
+    #    koniec1 = time.time()
+    #    print("Najoptymalniejsza sciezka metodą Tabu Search: ", tabuTSP[0])
+    #    print("Jej dlugosc wynosi:", tabuTSP[1])
+    #    print("czas dla Tabu: ",koniec1 - start1)
+    #    print("\n")
 main()
